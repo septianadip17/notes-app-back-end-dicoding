@@ -1,6 +1,7 @@
 const { nanoid } = require('nanoid');
 const notes = require('./notes');
 
+// Handler to add a new note
 const addNoteHandler = (request, h) => {
   const { title, tags, body } = request.payload;
 
@@ -41,6 +42,7 @@ const addNoteHandler = (request, h) => {
   return response;
 };
 
+// Handler to get all notes
 const getAllNotesHandler = () => ({
   status: 'success',
   data: {
@@ -48,6 +50,7 @@ const getAllNotesHandler = () => ({
   },
 });
 
+// Handler to get a note by its ID
 const getNoteByIdHandler = (request, h) => {
   const { id } = request.params;
 
@@ -70,4 +73,50 @@ const getNoteByIdHandler = (request, h) => {
   return response;
 };
 
-module.exports = { addNoteHandler, getAllNotesHandler, getNoteByIdHandler };
+// Handler to edit a note by its ID
+const editNoteByIdHandler = (request, h) => {
+  const { id } = request.params;
+
+  const { title, tags, body } = request.payload;
+  const updatedAt = new Date().toISOString();
+
+  const index = notes.findIndex((note) => note.id === id);
+
+  if (index !== -1) {
+    notes[index] = {
+      ...notes[index],
+      title,
+      tags,
+      body,
+      updatedAt,
+    };
+
+    const response = h.response({
+      status: 'success',
+      message: 'Catatan berhasil diperbarui',
+    });
+    response.code(200);
+    return response;
+  }
+
+  const response = h.response({
+    status: 'fail',
+    message: 'Gagal memperbarui catatan. Id tidak ditemukan',
+  });
+  response.code(404);
+  return response;
+};
+
+module.exports = {
+  addNoteHandler,
+  getAllNotesHandler,
+  getNoteByIdHandler,
+  editNoteByIdHandler,
+};
+
+module.exports = {
+  addNoteHandler,
+  getAllNotesHandler,
+  getNoteByIdHandler,
+  editNoteByIdHandler,
+};
