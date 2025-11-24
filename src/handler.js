@@ -43,12 +43,16 @@ const addNoteHandler = (request, h) => {
 };
 
 // Handler to get all notes
-const getAllNotesHandler = () => ({
-  status: 'success',
-  data: {
-    notes,
-  },
-});
+const getAllNotesHandler = () => {
+  const output = {
+    status: 'success',
+    data: {
+      notes,
+    },
+  };
+
+  return output;
+};
 
 // Handler to get a note by its ID
 const getNoteByIdHandler = (request, h) => {
