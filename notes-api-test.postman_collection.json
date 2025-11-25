@@ -1,0 +1,305 @@
+{
+	"info": {
+		"_postman_id": "516685b0-9d8f-47ec-aae8-2cdaf5b445e6",
+		"name": "Notes API Test",
+		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" width=\"2162\" height=\"1530\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32176845"
+	},
+	"item": [
+		{
+			"name": "create-notes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response body data should have noteId property and not equal to empty', () => {",
+							"    const responseJson = pm.response.json();",
+							"    const { data } = responseJson;",
+							" ",
+							"    pm.expect(data).to.ownProperty('noteId');",
+							"    pm.expect(data.noteId).to.not.equals('');",
+							" ",
+							"    pm.environment.set('noteId', data.noteId);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Catatan si Kuntul\",\n    \"tags\": [\"Android\", \"Web\"],\n    \"body\": \"Isi dari catatan A\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/notes",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"notes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-all-notes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response body data should have a notes array and contain at least 1 item', () => {",
+							"   const responseJson = pm.response.json();",
+							"   const { data } = responseJson;",
+							" ",
+							"   pm.expect(data).to.have.ownProperty('notes');",
+							"   pm.expect(data.notes).to.be.an('array');",
+							"   pm.expect(data.notes).lengthOf.at.least(1);",
+							"}); "
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/notes",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"notes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-a-note",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('note object should contain correct value for id, title, body, and tags property', () => {",
+							"const responseJson = pm.response.json();",
+							"const { data: { note } } = responseJson;",
+							" ",
+							"const expectedId = pm.environment.get('noteId');",
+							"const expectedTitle = 'Catatan A';",
+							"const expectedTags = ['Android', 'Web'];",
+							"const expectedBody = 'Isi dari catatan A';",
+							" ",
+							"pm.expect(note).to.have.ownProperty('id');",
+							"pm.expect(note.id).to.equals(expectedId);",
+							" ",
+							"pm.expect(note).to.have.ownProperty('title');",
+							"pm.expect(note.title).to.equals(expectedTitle);",
+							" ",
+							"pm.expect(note).to.have.ownProperty('tags');",
+							"pm.expect(note.tags).to.eql(expectedTags);",
+							" ",
+							"pm.expect(note).to.have.ownProperty('body');",
+							"pm.expect(note.body).to.equals(expectedBody);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/notes/2SC6E0CQU_59Ourd",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"notes",
+						"2SC6E0CQU_59Ourd"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit-a-note",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('when request the updated note', () => {",
+							"    const noteId = pm.environment.get('noteId');",
+							"    pm.sendRequest(`http://localhost:5000/notes/${noteId}`, (error, response) => {",
+							"        if(!error) {",
+							"            pm.test('then the updated note should contain the latest data', () => {",
+							"                const responseJson = response.json();",
+							"                const { data: { note } } = responseJson;",
+							" ",
+							"                const expectedTitle = 'Catatan A Revised';",
+							"                const expectedTags = ['Android', 'Web'];",
+							"                const expectedBody = 'Isi dari Catatan A Revised';",
+							" ",
+							"                pm.expect(note.title).to.equals(expectedTitle);",
+							"                pm.expect(note.tags).to.eql(expectedTags);",
+							"                pm.expect(note.body).to.equals(expectedBody);",
+							"            });",
+							"        }",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"title\": \"Catatan A kuntulak\",\n   \"tags\": [\"Android\", \"Web\"],\n   \"body\": \"Isi dari catatan A revisi\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/notes/2SC6E0CQU_59Ourd",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"notes",
+						"2SC6E0CQU_59Ourd"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete-a-note",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('when request the deleted note', () => {",
+							"    const noteId = pm.environment.get('noteId');",
+							"    pm.sendRequest(`http://localhost:5000/notes/${noteId}`, (error, response) => {",
+							"        if(!error) {",
+							"            pm.test('the deleted note should be not found', () => {",
+							"                pm.expect(response.code).to.equals(404);",
+							"                const responseJson = response.json();",
+							"                pm.expect(responseJson.status).to.equals('fail');",
+							"                pm.expect(responseJson.message).to.equals('Catatan tidak ditemukan');",
+							"            });",
+							"        }",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/notes/2SC6E0CQU_59Ourd",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"notes",
+						"2SC6E0CQU_59Ourd"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
